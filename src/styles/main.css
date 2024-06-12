@@ -1,0 +1,269 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+:root {
+  /* Color Variables */
+  --background-color: #fcfcfc;
+  --button-blue: #5EBAFF;
+  --topbar-blue: #c2e0f6;
+  --sidebar-blue: #acd4f3;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  font-family: "Inter", sans-serif;
+}
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* General container for auth pages (login and register) */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Container for main pages (dashboard, etc.) */
+.main-page {
+  display: flex;
+  flex: 1;
+}
+
+/*LOGIN*/
+.login-form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+.login-form,
+.registration-form {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.login-form h2,
+.registration-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.login-form .form-control:last-child {
+  margin-bottom: 0;
+}
+
+.loginBtn,
+.registerBtn {
+  width: 100%;
+  border-radius: 0px !important;
+  background-color: var(--button-blue) !important;
+  border-color: var(--button-blue);
+}
+
+.loginBtn:hover,
+.registerBtn:hover {
+  background-color: #ffffff !important;
+  color: #5EBAFF;
+  border-color: #ffffff;
+}
+
+.login-form .register-link,
+.registration-form .login-link {
+  margin-top: 10px;
+  text-decoration: none;
+  color: #5EBAFF;
+}
+
+.login-form .register-link:hover,
+.registration-form .login-link:hover {
+  text-decoration: underline;
+}
+
+.login-form span,
+.registration-form span {
+  color: #6f6f6f;
+}
+
+/*REGISTER*/
+.registration-form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/*TOPBAR*/
+.top-bar {
+  background-color: #ffffff;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  height: 60px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.system-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+.system-title span {
+  color:#5EBAFF;
+}
+
+.laundry-icon {
+  margin-bottom: 3px;
+  margin-right: 0.25rem;
+  width: 2.2rem;
+}
+
+.staff-name {
+  margin-right: 1rem;
+  font-size: 1rem;
+}
+
+/*SIDEBAR*/
+.sidebar {
+  background-color: #ffffff;
+  color: black;
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s;
+  position: fixed;
+  top: 60px; /* Adjust for the height of the top bar */
+  left: 0;
+  height: calc(100vh - 60px); /* Full height minus top bar */
+  z-index: 900;
+}
+
+.sidebar.hovered {
+  width: 150px;
+}
+
+.sidebar:not(.hovered) .sidebar-icon {
+  justify-content: center;
+}
+
+.sidebar-icon {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  font-size: 1.2rem;
+  color: black;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.3s, width 0.3s;
+  text-decoration: none;
+}
+
+.sidebar-icon:hover {
+  background-color: #5EBAFF;
+  color: white;
+}
+
+.sidebar-icon span {
+  margin-left: 10px;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.sidebar-icon:hover > span {
+  text-decoration: underline;
+}
+
+/* Content area */
+.content {
+  margin-left: 60px; 
+  margin-top: 60px; 
+  padding: 20px;
+  padding-top: 2rem;
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--background-color);
+  transition: margin-left 0.3s;
+}
+
+.sidebar.hovered ~ .content {
+  margin-left: 150px; /* Adjusted width of the sidebar when hovered */
+}
+
+/*DASHBOARD*/
+.quick-actions Button {
+  background-color: #D9D9D9;
+  color: black;
+  border: none;
+}
+
+/*CUSTOMER*/
+.customer-page .registerCustBtn {
+  background-color: #D9D9D9;
+  color: black;
+  border: none;
+}
+
+.customer-page .registerCustBtn:hover {
+  background-color: var(--button-blue);
+  color: #ffffff;
+}
+
+.deleteLink {
+  color: red;
+}
+
+.customer-list h2,
+.transaction-list h2,
+.service-list h2 {
+  font-weight: 400;
+  font-size: 2rem;
+  margin-top: 1.5rem;
+}
+
+.searchBtn {
+  border: none;
+  background-color: #d9d9d9;
+  color: black;
+}
+
+.searchBtn:hover {
+  background-color: var(--button-blue);
+  color: white;
+}
+
+/*TRANSACTION*/
+.transaction-page .createOrderBtn {
+  background-color: #D9D9D9;
+  color: black;
+  border: none;
+}
+
+.transaction-page .createOrderBtn:hover {
+  background-color: var(--button-blue);
+  color: #ffffff;
+}
