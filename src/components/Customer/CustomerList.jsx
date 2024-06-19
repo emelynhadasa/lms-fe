@@ -14,12 +14,23 @@ const CustomerList = ({ onEdit }) => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   useEffect(() => {
+    // const token = localStorage.getItem("token");
+    // console.log("Component Mounted. Token:", token); // Log token on component mount
     fetchCustomers();
   }, []); // Empty dependency array to fetch customers only once on component mount
 
   const fetchCustomers = async () => {
     try {
-      const response = await Axios.get('http://localhost:8081/api/customers/paginate');
+      const token = localStorage.getItem("token");
+      console.log("KONTIGO. Token:", token);
+      if (!token) {
+        throw new Error("Token not found. Please log in again.");
+      }
+      const response = await Axios.get("http://localhost:8081/api/customers/paginate", {
+        headers: {
+          "X-API-Token": token,
+        },
+      });
       setCustomers(response.data.content);
     } catch (error) {
       console.error('Error fetching customers:', error);
