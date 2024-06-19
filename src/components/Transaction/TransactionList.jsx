@@ -55,6 +55,8 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
       <Table striped bordered hover>
         <thead>
           <tr>
+            <th>Order Id</th>
+            <th>Name</th>
             <th>Phone</th>
             <th>Kg</th>
             <th>Service</th>
@@ -69,6 +71,8 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
         <tbody>
           {orders.map((order) => (
             <tr key={order.id}>
+              <td>{order.orderId}</td>
+              <td>{order.cusName}</td>
               <td>{order.phoneNumber}</td>
               <td>{order.weight}</td>
               <td>{order.serviceType}</td>
