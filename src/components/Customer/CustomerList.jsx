@@ -15,8 +15,8 @@ const CustomerList = ({ onEdit }) => {
 
   useEffect(() => {
     fetchCustomers();
-  }, []); // Empty dependency array to fetch customers only once on component mount
-
+  }, []); 
+  
   const fetchCustomers = async () => {
     try {
       const response = await Axios.get('http://localhost:8081/api/customers/paginate');
