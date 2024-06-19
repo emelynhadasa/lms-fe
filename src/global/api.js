@@ -26,11 +26,61 @@ const registerCustomer = async (customerData, token) => {
   }
 };
 
+const createOrder = async (orderData) => {
+  try {
+    const response = await axios.post(`${API_URL}/create-order`, orderData, {
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating order:', error);
+    throw error;
+  }
+};
+
+const getOrderDetail = async (orderId) => {
+  try {
+    const response = await axios.get(`${API_URL}/get-order-detail/${orderId}`, {
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching order detail:', error);
+    throw error;
+  }
+};
+
+const updateOrder = async (orderId, orderData) => {
+  try {
+    const response = await axios.put(`${API_URL}/update-order/${orderId}`, orderData, {
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating order:', error);
+    throw error;
+  }
+};
+
+const getOrderPaginate = async (params) => {
+  try {
+    const response = await axios.get(`${API_URL}/get-order/paginate`, {
+      params,
+    });
+    return response.data; // Ensure this returns the full response data
+  } catch (error) {
+    console.error('Error fetching paginated orders:', error);
+    throw error;
+  }
+};
+
+
+
 // Export all API functions under a single object named Api
 const Api = {
   registerUser,
   registerCustomer,
-  // Add other API functions here as needed
+  createOrder,
+  getOrderDetail,
+  updateOrder,
+  getOrderPaginate,
 };
 
 export default Api;

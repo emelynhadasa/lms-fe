@@ -6,8 +6,7 @@ import { Table } from 'react-bootstrap';
 const ServiceList = () => {
   const Services = [
     { id: 1, name: 'Reguler', estimation: '2 day' },
-    { id: 2, name: 'Fast', estimation: '1 day' },
-    { id: 3, name: 'Express', estimation: '1 hour' },
+    { id: 2, name: 'Express', estimation: '1 day' },
   ];
 
   return (

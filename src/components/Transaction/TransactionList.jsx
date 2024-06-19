@@ -1,28 +1,63 @@
-/* eslint-disable no-unused-vars */
-// TransactionList.jsx
-import React from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Form } from 'react-bootstrap';
+import { Table, Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Axios from 'axios';
+import EditOrderForm from './EditOrderForm';
+import CreateOrderForm from './CreateOrderForm'; // Import the CreateOrderForm
 
-const TransactionList = ({ onEdit, onDelete, onStatusChange }) => {
-  // This data should come from your state or props in a real application
-  const transactions = [
-    { id: 1, phone: '123-456-7890', kg: 5, service: 'Wash', total: 100, date: '2024-06-10', hour: '10:00', paid: false, done: false, pickedUp: false },
-    { id: 2, phone: '098-765-4321', kg: 10, service: 'Dry Clean', total: 200, date: '2024-06-11', hour: '12:00', paid: true, done: true, pickedUp: false },
-    // More dummy data
-  ];
+const TransactionList = ({ onEdit, onStatusChange }) => {
+  const [orders, setOrders] = useState([]);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false); 
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await Axios.get(
+        'http://localhost:8081/api/get-order/paginate'
+      );
+      setOrders(response.data.content);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
+  };
+
+  // const handleEdit = (order) => {
+  //   setSelectedOrder(order);
+  //   setShowEditForm(true);
+  // };
+
+  const handleCloseEditForm = () => {
+    setShowEditForm(false);
+    setSelectedOrder(null);
+    fetchOrders();
+  };
+
+  const handleCreateOrder = () => {
+    setShowCreateForm(true);
+  };
+
+  const handleCloseCreateForm = () => {
+    setShowCreateForm(false);
+  };
 
   return (
     <div className="transaction-list">
       <h2>List of Transactions</h2>
+      <Button variant="primary" onClick={handleCreateOrder}>
+        Create New Order
+      </Button>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>Phone</th>
             <th>Kg</th>
             <th>Service</th>
-            <th>Total</th>
             <th>Date</th>
             <th>Hour</th>
             <th>Paid?</th>
@@ -32,49 +67,67 @@ const TransactionList = ({ onEdit, onDelete, onStatusChange }) => {
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction) => (
-            <tr key={transaction.id}>
-              <td>{transaction.phone}</td>
-              <td>{transaction.kg}</td>
-              <td>{transaction.service}</td>
-              <td>{transaction.total}</td>
-              <td>{transaction.date}</td>
-              <td>{transaction.hour}</td>
+          {orders.map((order) => (
+            <tr key={order.id}>
+              <td>{order.phoneNumber}</td>
+              <td>{order.weight}</td>
+              <td>{order.serviceType}</td>
+              <td>{new Date(order.paidDate).toLocaleDateString()}</td>
+              <td>{new Date(order.paidDate).toLocaleTimeString()}</td>
               <td>
-                <Form.Check 
-                  type="checkbox" 
-                  checked={transaction.paid} 
-                  onChange={(e) => onStatusChange('paid', e.target.checked)} 
+                <Form.Check
+                  type="checkbox"
+                  checked={order.isPaid}
+                  onChange={(e) =>
+                    onStatusChange(order.id, 'isPaid', e.target.checked)
+                  }
                 />
               </td>
               <td>
-                <Form.Check 
-                  type="checkbox" 
-                  checked={transaction.done} 
-                  onChange={(e) => onStatusChange('done', e.target.checked)} 
+                <Form.Check
+                  type="checkbox"
+                  checked={order.done}
+                  onChange={(e) =>
+                    onStatusChange(order.id, 'done', e.target.checked)
+                  }
                 />
               </td>
               <td>
-                <Form.Check 
-                  type="checkbox" 
-                  checked={transaction.pickedUp} 
-                  onChange={(e) => onStatusChange('picked up', e.target.checked)} 
+                <Form.Check
+                  type="checkbox"
+                  checked={order.pickedUp}
+                  onChange={(e) =>
+                    onStatusChange(order.id, 'pickedUp', e.target.checked)
+                  }
                 />
               </td>
               <td>
-                <Link to="#" onClick={onEdit}>Edit</Link>
+                <Link to="#" onClick={() => onEdit(order.id)}>
+                  Edit
+                </Link>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
+      {selectedOrder && (
+        <EditOrderForm
+          show={showEditForm}
+          handleClose={handleCloseEditForm}
+          order={selectedOrder}
+        />
+      )}
+      <CreateOrderForm // Render the CreateOrderForm if showCreateForm is true
+        show={showCreateForm}
+        handleClose={handleCloseCreateForm}
+        fetchOrders={fetchOrders} // Pass fetchOrders to the CreateOrderForm
+      />
     </div>
   );
 };
 
 TransactionList.propTypes = {
   onEdit: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
   onStatusChange: PropTypes.func.isRequired,
 };
 
