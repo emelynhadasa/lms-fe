@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Form, Button } from 'react-bootstrap';
+import { Table, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import EditOrderForm from './EditOrderForm';
-import CreateOrderForm from './CreateOrderForm'; // Import the CreateOrderForm
+// import CreateOrderForm from './CreateOrderForm'; // Import the CreateOrderForm
 
 const TransactionList = ({ onEdit, onStatusChange }) => {
   const [orders, setOrders] = useState([]);
   const [showEditForm, setShowEditForm] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false); 
+  // const [showCreateForm, setShowCreateForm] = useState(false); 
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
@@ -38,20 +38,20 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
     fetchOrders();
   };
 
-  const handleCreateOrder = () => {
-    setShowCreateForm(true);
-  };
+  // const handleCreateOrder = () => {
+  //   setShowCreateForm(true);
+  // };
 
-  const handleCloseCreateForm = () => {
-    setShowCreateForm(false);
-  };
+  // const handleCloseCreateForm = () => {
+  //   setShowCreateForm(false);
+  // };
 
   return (
     <div className="transaction-list">
       <h2>List of Transactions</h2>
-      <Button variant="primary" onClick={handleCreateOrder}>
+      {/* <Button variant="primary" onClick={handleCreateOrder}>
         Create New Order
-      </Button>
+      </Button> */}
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -117,11 +117,11 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
           order={selectedOrder}
         />
       )}
-      <CreateOrderForm // Render the CreateOrderForm if showCreateForm is true
+      {/* <CreateOrderForm // Render the CreateOrderForm if showCreateForm is true
         show={showCreateForm}
         handleClose={handleCloseCreateForm}
         fetchOrders={fetchOrders} // Pass fetchOrders to the CreateOrderForm
-      />
+      /> */}
     </div>
   );
 };

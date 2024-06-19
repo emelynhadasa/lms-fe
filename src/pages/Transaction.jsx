@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Form, InputGroup, Container, Row, Col } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import CreateOrderForm from "../components/Transaction/CreateOrderForm";
 import EditOrderForm from "../components/Transaction/EditOrderForm";
 import StatusConfirmation from "../components/Transaction/StatusConfirmation";
@@ -15,9 +15,9 @@ const Transaction = () => {
   const [showStatusConfirmation, setShowStatusConfirmation] = useState(false);
   const [currentStatus, setCurrentStatus] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  
+
   const handleCreateShow = () => setShowCreateForm(true);
-  const handleEditShow = () => setShowEditForm(true);
+
   const handleStatusShow = (status, checked) => {
     setCurrentStatus(status);
     setIsChecked(checked);
@@ -32,11 +32,9 @@ const Transaction = () => {
         <Container>
           <Row className="mb-3">
             <Col xs={12} md={3}>
-              <Link to="/transaction">
-                <Button variant="primary" onClick={handleCreateShow} className="createOrderBtn">
-                  Create New Order
-                </Button>
-              </Link>
+              <Button variant="primary" onClick={handleCreateShow} className="createOrderBtn">
+                Create New Order
+              </Button>
             </Col>
             <Col xs={12} md={{ span: 6, offset: 3 }}>
               <InputGroup>
@@ -48,7 +46,7 @@ const Transaction = () => {
             </Col>
           </Row>
           <TransactionList
-            onEdit={handleEditShow}
+            // onEdit={handleEditShow}
             onStatusChange={handleStatusShow}
           />
           <CreateOrderForm show={showCreateForm} handleClose={() => setShowCreateForm(false)} />

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
-const CreateOrderForm = ({ show, handleClose, fetchOrders }) => {
+const CreateOrderForm = ({ show, handleClose }) => {
   const [formData, setFormData] = useState({
     phoneNumber: '',
     weight: '',
     serviceType: '',
-    paidStatus: 'false', // Default to false for simplicity
+    paidStatus: 'false',
   });
 
   const handleChange = (e) => {
@@ -26,7 +26,6 @@ const CreateOrderForm = ({ show, handleClose, fetchOrders }) => {
       console.log('Response status:', response.status);
       console.log('Order added:', response.data);
       handleClose(); // Close the modal
-      fetchOrders(); // Fetch orders to update the list
     } catch (error) {
       console.error(
         'Error adding order:',
@@ -111,7 +110,6 @@ const CreateOrderForm = ({ show, handleClose, fetchOrders }) => {
 CreateOrderForm.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  fetchOrders: PropTypes.func.isRequired, // Function to fetch orders after creating a new one
 };
 
 export default CreateOrderForm;
