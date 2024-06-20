@@ -42,6 +42,7 @@ const EditCustomerForm = ({ show, handleClose, customer }) => {
 
       console.log("Response status:", response.status); // Log the response status
       console.log("Customer updated:", response.data);
+      alert("Succes updating customer!");
       handleClose();
     } catch (error) {
       console.error("Error updating customer:", error.response ? error.response.data : error.message);

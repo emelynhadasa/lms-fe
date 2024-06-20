@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
-// StatusConfirmation.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button } from 'react-bootstrap';
 
-const StatusConfirmation = ({ show, handleClose, status, isChecked }) => {
+const StatusConfirmation = ({ show, handleClose, handleUpdate, status, isChecked }) => {
   const statusText = isChecked ? `marked as ${status}` : `marked as not ${status}`;
   return (
     <Modal show={show} onHide={handleClose}>
@@ -18,7 +16,7 @@ const StatusConfirmation = ({ show, handleClose, status, isChecked }) => {
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleClose}>
+        <Button variant="primary" onClick={handleUpdate}>
           Confirm
         </Button>
       </Modal.Footer>
@@ -29,6 +27,7 @@ const StatusConfirmation = ({ show, handleClose, status, isChecked }) => {
 StatusConfirmation.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  handleUpdate: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired,
   isChecked: PropTypes.bool.isRequired,
 };
