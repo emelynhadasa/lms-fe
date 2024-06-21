@@ -6,10 +6,12 @@ import TopBar from '../components/Bars/TopBar';
 import SideBar from '../components/Bars/SideBar';
 
 const Service = () => {
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
   return (
     <div className='service-page'>
       <TopBar />
-      <SideBar />
+      <SideBar setToken={setToken} />
       <div className='content'>
         <Container>
           <ServiceList />

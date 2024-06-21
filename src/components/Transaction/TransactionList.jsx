@@ -3,15 +3,14 @@ import PropTypes from 'prop-types';
 import { Table, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
-import EditOrderForm from './EditOrderForm';
 import StatusConfirmation from './StatusConfirmation';
 
-const TransactionList = ({ onStatusChange }) => {
+const TransactionList = () => {
   const [orders, setOrders] = useState([]);
-  const [showEditForm, setShowEditForm] = useState(false);
   const [showStatusConfirmation, setShowStatusConfirmation] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [pendingStatus, setPendingStatus] = useState(null);
+  const [currentStatus, setCurrentStatus] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -26,56 +25,57 @@ const TransactionList = ({ onStatusChange }) => {
     }
   };
 
-  const handleCheckboxChange = (order, e) => {
+  const handleCheckboxChange = (order, status, e) => {
     setSelectedOrder(order);
     setPendingStatus(e.target.checked);
+    setCurrentStatus(status);
     setShowStatusConfirmation(true);
   };
 
   const handleUpdate = async () => {
     try {
-
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("Token not found. Please log in again.");
       }
-  
+    
       const config = {
         headers: {
           "X-API-Token": token,
         },
       };
-
-      console.log('Updating order:', selectedOrder); // Debug log
-      console.log('Pending status:', pendingStatus); // Debug log
-  
-      // Assuming the API call for update would be something like this
-      const response = await Axios.put(`http://localhost:8081/api/update-order/${selectedOrder.orderId}`, { paidStatus: pendingStatus, done: false, pickedUp: false }, config);
-  
-      console.log("Update response status:", response.status);
-      console.log("Update message:", response.data);
+    
+      // Ensure all necessary fields are included and are either true or false
+      const updateData = {
+        paidStatus: currentStatus === 'paid' ? pendingStatus : selectedOrder.isPaid !== null ? selectedOrder.isPaid : false,
+        done: currentStatus === 'done' ? pendingStatus : selectedOrder.done !== null ? selectedOrder.done : false,
+        pickedUp: currentStatus === 'pickedUp' ? pendingStatus : selectedOrder.pickedUp !== null ? selectedOrder.pickedUp : false,
+      };
+    
+      // Debugging: Log updateData and selectedOrder to see the values being sent
+      console.log('Selected Order:', selectedOrder);
+      console.log('Update Data:', updateData);
+    
+      // eslint-disable-next-line no-unused-vars
+      const response = await Axios.put(
+        `http://localhost:8081/api/update-order/${selectedOrder.orderId}`,
+        updateData,
+        config
+      );
+    
       fetchOrders(); // Refresh the order list after updating
       setShowStatusConfirmation(false);
       setSelectedOrder(null);
-      setPendingStatus(null); // Reset pendingStatus after update
-      alert("SUKSES!");
+      setPendingStatus(null); 
+      alert("Success!");
+    
     } catch (error) {
       console.error("Error updating order:", error.response ? error.response.data : error.message);
       alert("Error updating order. Please try again.");
     }
   };  
-
-  const handleEdit = (order) => {
-    setSelectedOrder(order);
-    setShowEditForm(true);
-  };
-
-  const handleCloseEditForm = () => {
-    setShowEditForm(false);
-    setSelectedOrder(null);
-    fetchOrders();
-  };
-
+  
+  
   const handleCloseStatusConfirmation = () => {
     setShowStatusConfirmation(false);
     setSelectedOrder(null);
@@ -116,7 +116,7 @@ const TransactionList = ({ onStatusChange }) => {
                 <Form.Check
                   type="checkbox"
                   checked={order.isPaid}
-                  onChange={(e) => handleCheckboxChange(order, e)}
+                  onChange={(e) => handleCheckboxChange(order, 'paid', e)}
                 />
               </td>
               <td>{order.paidDate ? new Date(order.paidDate).toLocaleString() : ''}</td>
@@ -124,7 +124,7 @@ const TransactionList = ({ onStatusChange }) => {
                 <Form.Check
                   type="checkbox"
                   checked={order.done}
-                  onChange={(e) => onStatusChange(order.id, 'done', e.target.checked)}
+                  onChange={(e) => handleCheckboxChange(order, 'done', e)}
                 />
               </td>
               <td>{order.doneDate ? new Date(order.doneDate).toLocaleString() : ''}</td>
@@ -132,12 +132,12 @@ const TransactionList = ({ onStatusChange }) => {
                 <Form.Check
                   type="checkbox"
                   checked={order.pickedUp}
-                  onChange={(e) => onStatusChange(order.id, 'pickedUp', e.target.checked)}
+                  onChange={(e) => handleCheckboxChange(order, 'pickedUp', e)}
                 />
               </td>
               <td>{order.pickedUpDate ? new Date(order.pickedUpDate).toLocaleString() : ''}</td>
               <td>
-                <Link to="#" onClick={() => handleEdit(order)}>
+                <Link>
                   Send
                 </Link>
               </td>
@@ -146,18 +146,11 @@ const TransactionList = ({ onStatusChange }) => {
         </tbody>
       </Table>
       {selectedOrder && (
-        <EditOrderForm
-          show={showEditForm}
-          handleClose={handleCloseEditForm}
-          order={selectedOrder}
-        />
-      )}
-      {selectedOrder && (
         <StatusConfirmation
           show={showStatusConfirmation}
           handleClose={handleCloseStatusConfirmation}
-          handleUpdate={handleUpdate}
-          status="paid"
+          handleUpdate={handleUpdate} // Pass the handleUpdate function
+          status={currentStatus}
           isChecked={pendingStatus}
         />
       )}

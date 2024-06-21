@@ -3,15 +3,16 @@ import { Button, Form, InputGroup, Container, Row, Col } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 // import { Link } from "react-router-dom";
 import CreateOrderForm from "../components/Transaction/CreateOrderForm";
-import EditOrderForm from "../components/Transaction/EditOrderForm";
 import StatusConfirmation from "../components/Transaction/StatusConfirmation";
 import TransactionList from "../components/Transaction/TransactionList";
 import TopBar from '../components/Bars/TopBar';
 import SideBar from '../components/Bars/SideBar';
 
 const Transaction = () => {
+  // eslint-disable-next-line no-unused-vars
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
   const [showStatusConfirmation, setShowStatusConfirmation] = useState(false);
   const [currentStatus, setCurrentStatus] = useState('');
   const [isChecked, setIsChecked] = useState(false);
@@ -27,7 +28,7 @@ const Transaction = () => {
   return (
     <div className="transaction-page">
       <TopBar />
-      <SideBar />
+      <SideBar setToken={setToken} />
       <div className="content">
         <Container>
           <Row className="mb-3">
@@ -50,7 +51,6 @@ const Transaction = () => {
             onStatusChange={handleStatusShow}
           />
           <CreateOrderForm show={showCreateForm} handleClose={() => setShowCreateForm(false)} />
-          <EditOrderForm show={showEditForm} handleClose={() => setShowEditForm(false)} />
           <StatusConfirmation
             show={showStatusConfirmation}
             handleClose={() => setShowStatusConfirmation(false)}

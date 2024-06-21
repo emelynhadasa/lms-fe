@@ -1,11 +1,18 @@
-/* eslint-disable no-unused-vars */
 // src/components/SideBar.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaHome, FaUsers, FaTshirt, FaSignOutAlt, FaListAlt } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const SideBar = () => {
+const SideBar = ({ setToken }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setToken(null);
+    localStorage.removeItem('token');
+    navigate('/');
+  };
 
   return (
     <div
@@ -30,12 +37,16 @@ const SideBar = () => {
         {isHovered && <span>Service</span>}
       </Link>
       <hr style={{ width: '100%', margin: '10px auto', borderTop: '1.5px solid black' }} />
-      <Link to="/" className="sidebar-icon" title="Logout">
+      <Link to="/" className="sidebar-icon" title="Logout" onClick={handleLogout}>
         <FaSignOutAlt />
         {isHovered && <span>Logout</span>}
       </Link>
     </div>
   );
+};
+
+SideBar.propTypes = {
+  setToken: PropTypes.func.isRequired,
 };
 
 export default SideBar;

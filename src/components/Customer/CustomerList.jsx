@@ -24,7 +24,7 @@ const CustomerList = ({ onEdit }) => {
       const token = localStorage.getItem("token");
       console.log("KONTIGO. Token:", token);
       if (!token) {
-        throw new Error("Token not found. Please log in again.");
+        throw new Error("Your session has expired. Please log in again.");
       }
       const response = await Axios.get("http://localhost:8081/api/customers/paginate", {
         headers: {

@@ -11,6 +11,8 @@ import TopBar from '../components/Bars/TopBar';
 import SideBar from '../components/Bars/SideBar';
 
 const Customer = () => {
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -22,7 +24,7 @@ const Customer = () => {
   return (
     <div className='customer-page'>
       <TopBar />
-      <SideBar />
+      <SideBar setToken={setToken} />
       <div className='content'>
         <Container>
           <Row className="mb-3">
