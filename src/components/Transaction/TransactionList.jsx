@@ -4,13 +4,14 @@ import { Table, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import EditOrderForm from './EditOrderForm';
-// import CreateOrderForm from './CreateOrderForm'; // Import the CreateOrderForm
+import StatusConfirmation from './StatusConfirmation';
 
-const TransactionList = ({ onEdit, onStatusChange }) => {
+const TransactionList = ({ onStatusChange }) => {
   const [orders, setOrders] = useState([]);
   const [showEditForm, setShowEditForm] = useState(false);
-  // const [showCreateForm, setShowCreateForm] = useState(false); 
+  const [showStatusConfirmation, setShowStatusConfirmation] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [pendingStatus, setPendingStatus] = useState(null);
 
   useEffect(() => {
     fetchOrders();
@@ -18,19 +19,56 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
 
   const fetchOrders = async () => {
     try {
-      const response = await Axios.get(
-        'http://localhost:8081/api/get-order/paginate'
-      );
+      const response = await Axios.get('http://localhost:8081/api/get-order/paginate');
       setOrders(response.data.content);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
   };
 
-  // const handleEdit = (order) => {
-  //   setSelectedOrder(order);
-  //   setShowEditForm(true);
-  // };
+  const handleCheckboxChange = (order, e) => {
+    setSelectedOrder(order);
+    setPendingStatus(e.target.checked);
+    setShowStatusConfirmation(true);
+  };
+
+  const handleUpdate = async () => {
+    try {
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token not found. Please log in again.");
+      }
+  
+      const config = {
+        headers: {
+          "X-API-Token": token,
+        },
+      };
+
+      console.log('Updating order:', selectedOrder); // Debug log
+      console.log('Pending status:', pendingStatus); // Debug log
+  
+      // Assuming the API call for update would be something like this
+      const response = await Axios.put(`http://localhost:8081/api/update-order/${selectedOrder.orderId}`, { paidStatus: pendingStatus, done: false, pickedUp: false }, config);
+  
+      console.log("Update response status:", response.status);
+      console.log("Update message:", response.data);
+      fetchOrders(); // Refresh the order list after updating
+      setShowStatusConfirmation(false);
+      setSelectedOrder(null);
+      setPendingStatus(null); // Reset pendingStatus after update
+      alert("SUKSES!");
+    } catch (error) {
+      console.error("Error updating order:", error.response ? error.response.data : error.message);
+      alert("Error updating order. Please try again.");
+    }
+  };  
+
+  const handleEdit = (order) => {
+    setSelectedOrder(order);
+    setShowEditForm(true);
+  };
 
   const handleCloseEditForm = () => {
     setShowEditForm(false);
@@ -38,20 +76,15 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
     fetchOrders();
   };
 
-  // const handleCreateOrder = () => {
-  //   setShowCreateForm(true);
-  // };
-
-  // const handleCloseCreateForm = () => {
-  //   setShowCreateForm(false);
-  // };
+  const handleCloseStatusConfirmation = () => {
+    setShowStatusConfirmation(false);
+    setSelectedOrder(null);
+    setPendingStatus(null); // Reset pendingStatus when modal is closed
+  };
 
   return (
     <div className="transaction-list">
       <h2>List of Transactions</h2>
-      {/* <Button variant="primary" onClick={handleCreateOrder}>
-        Create New Order
-      </Button> */}
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -60,11 +93,13 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
             <th>Phone</th>
             <th>Kg</th>
             <th>Service</th>
-            <th>Date</th>
-            <th>Hour</th>
+            <th>Price</th>
             <th>Paid?</th>
+            <th>Paid Date</th>
             <th>Done?</th>
+            <th>Done Date</th>
             <th>Picked Up?</th>
+            <th>Picked Up Date</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -76,38 +111,34 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
               <td>{order.phoneNumber}</td>
               <td>{order.weight}</td>
               <td>{order.serviceType}</td>
-              <td>{new Date(order.paidDate).toLocaleDateString()}</td>
-              <td>{new Date(order.paidDate).toLocaleTimeString()}</td>
+              <td>{order.totalPrice}</td>
               <td>
                 <Form.Check
                   type="checkbox"
                   checked={order.isPaid}
-                  onChange={(e) =>
-                    onStatusChange(order.id, 'isPaid', e.target.checked)
-                  }
+                  onChange={(e) => handleCheckboxChange(order, e)}
                 />
               </td>
+              <td>{order.paidDate ? new Date(order.paidDate).toLocaleString() : ''}</td>
               <td>
                 <Form.Check
                   type="checkbox"
                   checked={order.done}
-                  onChange={(e) =>
-                    onStatusChange(order.id, 'done', e.target.checked)
-                  }
+                  onChange={(e) => onStatusChange(order.id, 'done', e.target.checked)}
                 />
               </td>
+              <td>{order.doneDate ? new Date(order.doneDate).toLocaleString() : ''}</td>
               <td>
                 <Form.Check
                   type="checkbox"
                   checked={order.pickedUp}
-                  onChange={(e) =>
-                    onStatusChange(order.id, 'pickedUp', e.target.checked)
-                  }
+                  onChange={(e) => onStatusChange(order.id, 'pickedUp', e.target.checked)}
                 />
               </td>
+              <td>{order.pickedUpDate ? new Date(order.pickedUpDate).toLocaleString() : ''}</td>
               <td>
-                <Link to="#" onClick={() => onEdit(order.id)}>
-                  Edit
+                <Link to="#" onClick={() => handleEdit(order)}>
+                  Send
                 </Link>
               </td>
             </tr>
@@ -121,17 +152,20 @@ const TransactionList = ({ onEdit, onStatusChange }) => {
           order={selectedOrder}
         />
       )}
-      {/* <CreateOrderForm // Render the CreateOrderForm if showCreateForm is true
-        show={showCreateForm}
-        handleClose={handleCloseCreateForm}
-        fetchOrders={fetchOrders} // Pass fetchOrders to the CreateOrderForm
-      /> */}
+      {selectedOrder && (
+        <StatusConfirmation
+          show={showStatusConfirmation}
+          handleClose={handleCloseStatusConfirmation}
+          handleUpdate={handleUpdate}
+          status="paid"
+          isChecked={pendingStatus}
+        />
+      )}
     </div>
   );
 };
 
 TransactionList.propTypes = {
-  onEdit: PropTypes.func.isRequired,
   onStatusChange: PropTypes.func.isRequired,
 };
 
