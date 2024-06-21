@@ -221,6 +221,16 @@ body {
   border: none;
 }
 
+.quick-info .in-progress-box {
+  background-color: #ffcc67 !important; /* Oranye */
+  border: none;
+}
+
+.quick-info .picked-up-box {
+  background-color: #73dc9d; /* Hijau */
+  border: none;
+}
+
 /*CUSTOMER*/
 .customer-page .registerCustBtn {
   background-color: #D9D9D9;

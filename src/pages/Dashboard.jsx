@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import TopBar from '../components/Bars/TopBar';
 import SideBar from '../components/Bars/SideBar';
 import QuickActions from '../components/Dashboard/QuickActions';
@@ -40,7 +40,7 @@ const Dashboard = () => {
         <h2 className='welcome-text'>Welcome, {username}!</h2>
         <p>There are still <u>13 laundries</u> to work on.</p>
         <QuickActions/>
-        {/* <QuickInfo/> */}
+        <QuickInfo/>
       </div>
     </div>
   );
