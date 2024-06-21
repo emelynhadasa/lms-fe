@@ -38,48 +38,55 @@ const TransactionList = () => {
       if (!token) {
         throw new Error("Token not found. Please log in again.");
       }
-    
+
       const config = {
         headers: {
           "X-API-Token": token,
         },
       };
-    
-      // Ensure all necessary fields are included and are either true or false
+
       const updateData = {
         paidStatus: currentStatus === 'paid' ? pendingStatus : selectedOrder.isPaid !== null ? selectedOrder.isPaid : false,
         done: currentStatus === 'done' ? pendingStatus : selectedOrder.done !== null ? selectedOrder.done : false,
         pickedUp: currentStatus === 'pickedUp' ? pendingStatus : selectedOrder.pickedUp !== null ? selectedOrder.pickedUp : false,
       };
-    
-      // Debugging: Log updateData and selectedOrder to see the values being sent
+
       console.log('Selected Order:', selectedOrder);
       console.log('Update Data:', updateData);
-    
-      // eslint-disable-next-line no-unused-vars
-      const response = await Axios.put(
+
+      await Axios.put(
         `http://localhost:8081/api/update-order/${selectedOrder.orderId}`,
         updateData,
         config
       );
-    
+
       fetchOrders(); // Refresh the order list after updating
       setShowStatusConfirmation(false);
       setSelectedOrder(null);
       setPendingStatus(null); 
       alert("Success!");
-    
+
     } catch (error) {
       console.error("Error updating order:", error.response ? error.response.data : error.message);
       alert("Error updating order. Please try again.");
     }
-  };  
-  
-  
+  };
+
   const handleCloseStatusConfirmation = () => {
     setShowStatusConfirmation(false);
     setSelectedOrder(null);
-    setPendingStatus(null); // Reset pendingStatus when modal is closed
+    setPendingStatus(null);
+  };
+
+  const handleSendInvoice = async (orderId) => {
+    try {
+      // eslint-disable-next-line no-unused-vars
+      const response = await Axios.get(`http://localhost:8081/send-telegram-message?orderId=${orderId}`);
+      alert('Invoice sent successfully!');
+    } catch (error) {
+      console.error('Error sending invoice:', error);
+      alert('Failed to send invoice. Please try again.');
+    }
   };
 
   return (
@@ -137,7 +144,7 @@ const TransactionList = () => {
               </td>
               <td>{order.pickedUpDate ? new Date(order.pickedUpDate).toLocaleString() : ''}</td>
               <td>
-                <Link>
+                <Link to="#" onClick={() => handleSendInvoice(order.orderId)}>
                   Send
                 </Link>
               </td>
@@ -149,7 +156,7 @@ const TransactionList = () => {
         <StatusConfirmation
           show={showStatusConfirmation}
           handleClose={handleCloseStatusConfirmation}
-          handleUpdate={handleUpdate} // Pass the handleUpdate function
+          handleUpdate={handleUpdate}
           status={currentStatus}
           isChecked={pendingStatus}
         />
