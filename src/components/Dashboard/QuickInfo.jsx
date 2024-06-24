@@ -15,7 +15,7 @@ const QuickInfo = () => {
 
   useEffect(() => {
     fetchInProgress();
-    fetchPickedUp();
+    fetchNotPickedUp();
   });
 
   const fetchInProgress = async () => {
@@ -36,7 +36,7 @@ const QuickInfo = () => {
     }
   };
 
-  const fetchPickedUp = async () => {
+  const fetchNotPickedUp = async () => {
     try {
       const token = localStorage.getItem("token");
       console.log("KONTIGO. Token:", token);
@@ -50,7 +50,7 @@ const QuickInfo = () => {
       });
       setPickedUp(response.data.data.total);
     } catch (error) {
-      console.error('Error fetching picked up orders:', error);
+      console.error('Error fetching not-picked-up orders:', error);
     }
   };
 
@@ -77,7 +77,7 @@ const QuickInfo = () => {
                 className="btn btn-warning w-100 d-flex flex-column align-items-center justify-content-center picked-up-box"
               >
                 <div className="d-flex align-items-center justify-content-between w-100">
-                  <span>Picked-Up Laundry</span> <BsBoxArrowUpRight />
+                  <span>Not Picked-Up Laundry</span> <BsBoxArrowUpRight />
                 </div>
                 <p className="mb-0">{pickedUp}</p>
               </Link>
